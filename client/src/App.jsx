@@ -235,6 +235,106 @@ class RealCalculator {
     return this.currentValue;
   }
 
+  // Cube (x³)
+  cube() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(value * value * value);
+    return this.currentValue;
+  }
+
+  // Cube root (∛x)
+  cubeRoot() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.cbrt(value));
+    return this.currentValue;
+  }
+
+  // Power of 10 (10^x)
+  powerOf10() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.pow(10, value));
+    return this.currentValue;
+  }
+
+  // Natural log (ln)
+  naturalLog() {
+    const value = parseFloat(this.currentValue);
+    if (value <= 0) {
+      this.currentValue = "Error";
+    } else {
+      this.currentValue = this.formatDisplay(Math.log(value));
+    }
+    return this.currentValue;
+  }
+
+  // Log base 10
+  log10() {
+    const value = parseFloat(this.currentValue);
+    if (value <= 0) {
+      this.currentValue = "Error";
+    } else {
+      this.currentValue = this.formatDisplay(Math.log10(value));
+    }
+    return this.currentValue;
+  }
+
+  // Exponential (e^x)
+  exponential() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.exp(value));
+    return this.currentValue;
+  }
+
+  // Sine
+  sine() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.sin(value * Math.PI / 180));
+    return this.currentValue;
+  }
+
+  // Cosine
+  cosine() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.cos(value * Math.PI / 180));
+    return this.currentValue;
+  }
+
+  // Tangent
+  tangent() {
+    const value = parseFloat(this.currentValue);
+    this.currentValue = this.formatDisplay(Math.tan(value * Math.PI / 180));
+    return this.currentValue;
+  }
+
+  // Pi constant
+  pi() {
+    this.currentValue = this.formatDisplay(Math.PI);
+    this.waitingForOperand = true;
+    return this.currentValue;
+  }
+
+  // Euler's number
+  eulerNumber() {
+    this.currentValue = this.formatDisplay(Math.E);
+    this.waitingForOperand = true;
+    return this.currentValue;
+  }
+
+  // Factorial
+  factorial() {
+    const value = parseFloat(this.currentValue);
+    if (value < 0 || !Number.isInteger(value) || value > 170) {
+      this.currentValue = "Error";
+    } else {
+      let result = 1;
+      for (let i = 2; i <= value; i++) {
+        result *= i;
+      }
+      this.currentValue = this.formatDisplay(result);
+    }
+    return this.currentValue;
+  }
+
   // Clear entry (CE) - just clears current input
   clearEntry() {
     this.currentValue = "0";
@@ -670,25 +770,281 @@ export default function App() {
   }, [calc, updateDisplay]);
 
   // Handle square root
-  const handleSquareRoot = useCallback(() => {
+  const handleSquareRoot = useCallback(async () => {
+    const prevValue = calc.currentValue;
     calc.squareRoot();
     updateDisplay();
     animateResult();
+    
+    // Save to history
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `√(${prevValue})`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
   }, [calc, updateDisplay, animateResult]);
 
   // Handle square
-  const handleSquare = useCallback(() => {
+  const handleSquare = useCallback(async () => {
+    const prevValue = calc.currentValue;
     calc.square();
     updateDisplay();
     animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `${prevValue}²`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
   }, [calc, updateDisplay, animateResult]);
 
   // Handle reciprocal
-  const handleReciprocal = useCallback(() => {
+  const handleReciprocal = useCallback(async () => {
+    const prevValue = calc.currentValue;
     calc.reciprocal();
     updateDisplay();
     animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `1/${prevValue}`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
   }, [calc, updateDisplay, animateResult]);
+
+  // Handle cube
+  const handleCube = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.cube();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `${prevValue}³`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle cube root
+  const handleCubeRoot = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.cubeRoot();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `∛(${prevValue})`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle power of 10
+  const handlePowerOf10 = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.powerOf10();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `10^${prevValue}`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle natural log
+  const handleNaturalLog = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.naturalLog();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `ln(${prevValue})`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle log10
+  const handleLog10 = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.log10();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `log(${prevValue})`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle exponential
+  const handleExponential = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.exponential();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `e^${prevValue}`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle sine
+  const handleSine = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.sine();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `sin(${prevValue}°)`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle cosine
+  const handleCosine = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.cosine();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `cos(${prevValue}°)`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle tangent
+  const handleTangent = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.tangent();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `tan(${prevValue}°)`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle pi
+  const handlePi = useCallback(async () => {
+    calc.pi();
+    updateDisplay();
+    animateResult();
+    
+    const historyEntry = {
+      expression: `π`,
+      result: calc.currentValue,
+      timestamp: new Date().toISOString()
+    };
+    await saveToHistory(historyEntry);
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle euler
+  const handleEuler = useCallback(async () => {
+    calc.eulerNumber();
+    updateDisplay();
+    animateResult();
+    
+    const historyEntry = {
+      expression: `e`,
+      result: calc.currentValue,
+      timestamp: new Date().toISOString()
+    };
+    await saveToHistory(historyEntry);
+  }, [calc, updateDisplay, animateResult]);
+
+  // Handle factorial
+  const handleFactorial = useCallback(async () => {
+    const prevValue = calc.currentValue;
+    calc.factorial();
+    updateDisplay();
+    animateResult();
+    
+    if (calc.currentValue !== "Error") {
+      const historyEntry = {
+        expression: `${prevValue}!`,
+        result: calc.currentValue,
+        timestamp: new Date().toISOString()
+      };
+      await saveToHistory(historyEntry);
+    }
+  }, [calc, updateDisplay, animateResult]);
+
+  // Helper function to save to history
+  const saveToHistory = useCallback(async (historyEntry) => {
+    try {
+      const savedItem = await saveHistoryToApi(historyEntry);
+      const nextItem = savedItem && savedItem._id ? savedItem : {
+        ...historyEntry,
+        _id: `local-${Date.now()}`,
+      };
+
+      setHistory((current) => {
+        const nextHistory = [nextItem, ...current.slice(0, 49)];
+        storeCachedHistory(nextHistory);
+        return nextHistory;
+      });
+    } catch {
+      const localItem = {
+        ...historyEntry,
+        _id: `local-${Date.now()}`,
+      };
+      setHistory((current) => {
+        const nextHistory = [localItem, ...current.slice(0, 49)];
+        storeCachedHistory(nextHistory);
+        return nextHistory;
+      });
+    }
+  }, []);
 
   // Handle button click
   const handleInput = useCallback((value) => {
@@ -727,15 +1083,53 @@ export default function App() {
       case "x²":
         handleSquare();
         break;
+      case "x³":
+        handleCube();
+        break;
+      case "∛":
+        handleCubeRoot();
+        break;
       case "1/x":
         handleReciprocal();
+        break;
+      case "10^x":
+        handlePowerOf10();
+        break;
+      case "ln":
+        handleNaturalLog();
+        break;
+      case "log":
+        handleLog10();
+        break;
+      case "e^x":
+        handleExponential();
+        break;
+      case "sin":
+        handleSine();
+        break;
+      case "cos":
+        handleCosine();
+        break;
+      case "tan":
+        handleTangent();
+        break;
+      case "π":
+        handlePi();
+        break;
+      case "e":
+        handleEuler();
+        break;
+      case "n!":
+        handleFactorial();
         break;
       default:
         break;
     }
   }, [handleNumber, handleDecimal, handleOperator, handleEquals, handleClear, 
       handleClearEntry, handleBackspace, handleToggleSign, handlePercentage,
-      handleSquareRoot, handleSquare, handleReciprocal]);
+      handleSquareRoot, handleSquare, handleReciprocal, handleCube, handleCubeRoot,
+      handlePowerOf10, handleNaturalLog, handleLog10, handleExponential,
+      handleSine, handleCosine, handleTangent, handlePi, handleEuler, handleFactorial]);
 
   // Keyboard support
   useEffect(() => {
@@ -906,9 +1300,24 @@ export default function App() {
                 {/* Scientific Buttons */}
                 {showScientific && (
                   <div className="scientific-grid">
+                    <CalcButton label="sin" type="scientific" onClick={handleInput} />
+                    <CalcButton label="cos" type="scientific" onClick={handleInput} />
+                    <CalcButton label="tan" type="scientific" onClick={handleInput} />
                     <CalcButton label="√" type="scientific" onClick={handleInput} />
+                    
                     <CalcButton label="x²" type="scientific" onClick={handleInput} />
+                    <CalcButton label="x³" type="scientific" onClick={handleInput} />
+                    <CalcButton label="∛" type="scientific" onClick={handleInput} display="∛x" />
                     <CalcButton label="1/x" type="scientific" onClick={handleInput} />
+                    
+                    <CalcButton label="ln" type="scientific" onClick={handleInput} />
+                    <CalcButton label="log" type="scientific" onClick={handleInput} />
+                    <CalcButton label="e^x" type="scientific" onClick={handleInput} />
+                    <CalcButton label="10^x" type="scientific" onClick={handleInput} />
+                    
+                    <CalcButton label="π" type="scientific" onClick={handleInput} />
+                    <CalcButton label="e" type="scientific" onClick={handleInput} />
+                    <CalcButton label="n!" type="scientific" onClick={handleInput} />
                     <CalcButton label="%" type="scientific" onClick={handleInput} />
                   </div>
                 )}

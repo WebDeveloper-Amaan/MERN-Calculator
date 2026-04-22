@@ -1397,6 +1397,7 @@ export default function App() {
           {/* Footer */}
           <footer className="app-footer">
             <p>Built with React, Express, MongoDB & Node.js</p>
+            <p>Designed & Developed by Amaan Ahmed</p>
           </footer>
 
         </div>
